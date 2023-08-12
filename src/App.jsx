@@ -1,16 +1,14 @@
-import { useState } from "react";
 import ProductList from "./components/ProductList/ProuctList";
 import SearchBar from "./components/SearchBar";
 import useFetch from "./hooks/useFetch";
+import useSearch from "./hooks/useSearch";
 
 const BASE_URL = "http://localhost:3001/products";
 
 function App() {
   const products = useFetch(BASE_URL);
-
-  const [searchTerm, setSearchTerm] = useState("");
-  const [category, setCategory] = useState("all");
-  const [inStockOnly, setInStockOnly] = useState(false);
+  const { setSearchTerm, setCategory, setInStockOnly, filteredProudcts } =
+    useSearch(products);
 
   return (
     <>
@@ -22,15 +20,7 @@ function App() {
         setInStockOnly={setInStockOnly}
       />
       ;
-      <ProductList
-        products={products.filter(
-          (product) =>
-            product.name.toLowerCase().includes(searchTerm.toLowerCase()) &&
-            (category === "all" || product.category === category) &&
-            (!inStockOnly || product.stocked)
-        )}
-      />
-      ;
+      <ProductList products={filteredProudcts} />;
     </>
   );
 }
